@@ -39,8 +39,51 @@ router.get('/tasks/:id', async (req, res) => {
     }
 })
 
+router.patch('/tasks/:id', async (req, res) => {
+    const keys = Object.keys(req.body)
 
+    const permitidos = ['description', 'completed']
 
+    const isValidOperation = keys.every((key) => {
+        return permitidos.includes(key)
+    })
 
+    if(!isValidOperation) {
+        return res.status(400).send({error: 'Invalid update!'})
+    }
+
+    try {
+
+        const task = await Task.findById(req.params.id)
+
+        keys.forEach((key) => task[key] = req.body[key])
+        await task.save()
+
+        if(!task) {
+            return res.status(404).send()
+        }
+
+        res.send(task)
+    
+    } catch(e) {
+        res.status(400).send(e)
+    }
+
+})
+
+router.delete('/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id)
+
+        if(!task) {
+            return res.status(404).send()
+        }
+
+        res.send(task)
+
+    } catch(e) {
+        res.status(400).send()
+    }
+})
 
 module.exports = router

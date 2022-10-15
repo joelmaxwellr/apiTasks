@@ -4,6 +4,12 @@ const host = '127.0.0.1';
 const port = '27017';
 const database = 'task-manager-api';
 
-const url = `mongodb://${host}:${port}/${database}` 
+const url = `mongodb://${host}:${port}/${database}`
 
-mongoose.connect(url)
+mongoose.connect(url, {
+    useNewUrlParser: true,
+    // useCreateIndex: true,
+    autoIndex: true, 
+   // useFindAndModify: false,
+    useUnifiedTopology:true
+})
